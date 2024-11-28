@@ -33,11 +33,9 @@ class App extends Component<AppProps, AppState> {
     const counters = [...this.state.counters];
     const index = counters.indexOf(counter);
 
-    if (index) {
-      counters[index] = { ...counter };
-      counters[index].value++;
-      this.setState({ counters });
-    }
+    counters[index] = { ...counter };
+    counters[index].value++;
+    this.setState({ counters });
   };
 
   // Si no es flecha pierde referencia del this
