@@ -7,5 +7,6 @@ export default interface IMovie{
   numberInStock: number
   dailyRentalRate: number
   publishDate: string
+  liked?: boolean
 }
 

@@ -1,84 +1,98 @@
-const MOVIES = [
+import * as genresAPI from "./fakeGenreService";
+
+const movies = [
   {
-    _id: "1",
-    title: "The Shawshank Redemption",
-    genre: { _id: "1", name: "Drama" },
-    numberInStock: 5,
-    dailyRentalRate: 3.99,
-    publishDate: "1994-09-22T00:00:00.000Z",
-  },
-  {
-    _id: "2",
-    title: "The Dark Knight",
-    genre: { _id: "2", name: "Action" },
-    numberInStock: 3,
-    dailyRentalRate: 4.99,
-    publishDate: "2008-07-18T00:00:00.000Z",
-  },
-  {
-    _id: "3",
-    title: "Inception",
-    genre: { _id: "3", name: "Sci-Fi" },
-    numberInStock: 4,
-    dailyRentalRate: 5.49,
-    publishDate: "2010-07-16T00:00:00.000Z",
-  },
-  {
-    _id: "4",
-    title: "The Godfather",
-    genre: { _id: "4", name: "Crime" },
+    _id: "5b21ca3eeb7f6fbccd471815",
+    title: "Terminator",
+    genre: { _id: "5b21ca3eeb7f6fbccd471818", name: "Action" },
     numberInStock: 6,
-    dailyRentalRate: 2.99,
-    publishDate: "1972-03-24T00:00:00.000Z",
+    dailyRentalRate: 2.5,
+    publishDate: "2018-01-03T19:04:28.809Z",
+    liked: true
   },
   {
-    _id: "5",
-    title: "Pulp Fiction",
-    genre: { _id: "4", name: "Crime" },
-    numberInStock: 2,
-    dailyRentalRate: 3.49,
-    publishDate: "1994-10-14T00:00:00.000Z",
+    _id: "5b21ca3eeb7f6fbccd471816",
+    title: "Die Hard",
+    genre: { _id: "5b21ca3eeb7f6fbccd471818", name: "Action" },
+    numberInStock: 5,
+    dailyRentalRate: 2.5
   },
   {
-    _id: "6",
-    title: "The Lord of the Rings: The Return of the King",
-    genre: { _id: "5", name: "Fantasy" },
+    _id: "5b21ca3eeb7f6fbccd471817",
+    title: "Get Out",
+    genre: { _id: "5b21ca3eeb7f6fbccd471820", name: "Thriller" },
     numberInStock: 8,
-    dailyRentalRate: 6.99,
-    publishDate: "2003-12-17T00:00:00.000Z",
+    dailyRentalRate: 3.5
   },
   {
-    _id: "7",
-    title: "Forrest Gump",
-    genre: { _id: "1", name: "Drama" },
+    _id: "5b21ca3eeb7f6fbccd471819",
+    title: "Trip to Italy",
+    genre: { _id: "5b21ca3eeb7f6fbccd471814", name: "Comedy" },
     numberInStock: 7,
-    dailyRentalRate: 3.49,
-    publishDate: "1994-07-06T00:00:00.000Z",
+    dailyRentalRate: 3.5
   },
   {
-    _id: "8",
-    title: "The Matrix",
-    genre: { _id: "2", name: "Action" },
+    _id: "5b21ca3eeb7f6fbccd47181a",
+    title: "Airplane",
+    genre: { _id: "5b21ca3eeb7f6fbccd471814", name: "Comedy" },
+    numberInStock: 7,
+    dailyRentalRate: 3.5
+  },
+  {
+    _id: "5b21ca3eeb7f6fbccd47181b",
+    title: "Wedding Crashers",
+    genre: { _id: "5b21ca3eeb7f6fbccd471814", name: "Comedy" },
+    numberInStock: 7,
+    dailyRentalRate: 3.5
+  },
+  {
+    _id: "5b21ca3eeb7f6fbccd47181e",
+    title: "Gone Girl",
+    genre: { _id: "5b21ca3eeb7f6fbccd471820", name: "Thriller" },
+    numberInStock: 7,
+    dailyRentalRate: 4.5
+  },
+  {
+    _id: "5b21ca3eeb7f6fbccd47181f",
+    title: "The Sixth Sense",
+    genre: { _id: "5b21ca3eeb7f6fbccd471820", name: "Thriller" },
     numberInStock: 4,
-    dailyRentalRate: 4.49,
-    publishDate: "1999-03-31T00:00:00.000Z",
+    dailyRentalRate: 3.5
   },
   {
-    _id: "9",
-    title: "Fight Club",
-    genre: { _id: "1", name: "Drama" },
-    numberInStock: 3,
-    dailyRentalRate: 3.99,
-    publishDate: "1999-10-15T00:00:00.000Z",
-  },
-  {
-    _id: "10",
+    _id: "5b21ca3eeb7f6fbccd471821",
     title: "The Avengers",
-    genre: { _id: "2", name: "Action" },
-    numberInStock: 10,
-    dailyRentalRate: 4.99,
-    publishDate: "2012-04-11T00:00:00.000Z",
-  },
+    genre: { _id: "5b21ca3eeb7f6fbccd471818", name: "Action" },
+    numberInStock: 7,
+    dailyRentalRate: 3.5
+  }
 ];
 
-export default MOVIES;
+export function getMovies() {
+  return movies;
+}
+
+export function getMovie(id) {
+  return movies.find(m => m._id === id);
+}
+
+export function saveMovie(movie) {
+  let movieInDb = movies.find(m => m._id === movie._id) || {};
+  movieInDb.name = movie.name;
+  movieInDb.genre = genresAPI.genres.find(g => g._id === movie.genreId);
+  movieInDb.numberInStock = movie.numberInStock;
+  movieInDb.dailyRentalRate = movie.dailyRentalRate;
+
+  if (!movieInDb._id) {
+    movieInDb._id = Date.now();
+    movies.push(movieInDb);
+  }
+
+  return movieInDb;
+}
+
+export function deleteMovie(id) {
+  let movieInDb = movies.find(m => m._id === id);
+  movies.splice(movies.indexOf(movieInDb), 1);
+  return movieInDb;
+}

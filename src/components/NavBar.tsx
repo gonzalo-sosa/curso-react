@@ -1,18 +1,20 @@
-import { Component } from "react";
-
-interface NavBarProps {}
-
-interface NavBarState {}
-
-class NavBar extends Component<NavBarProps, NavBarState> {
-  //state = { :  }
-  render() {
-    return (
-      <nav className="navbar navbar-light bg-light">
-        <a className="navbar-brand" href="#"></a>
-      </nav>
-    );
-  }
+interface NavBarProps {
+  totalCounters: number;
 }
+
+const NavBar: React.FC<NavBarProps> = ({ totalCounters }): JSX.Element => {
+  console.log("NavBar - Rendered");
+
+  return (
+    <nav className="navbar navbar-light bg-light">
+      <a className="navbar-brand" href="#">
+        Navbar{" "}
+        <span className="badge badge-pill badge-secondary">
+          {totalCounters}
+        </span>
+      </a>
+    </nav>
+  );
+};
 
 export default NavBar;

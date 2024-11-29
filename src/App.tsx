@@ -4,6 +4,7 @@ import Counters from "./components/Counters";
 import ListOfMovies from "./components/ListOfMovies";
 import NavBar from "./components/NavBar";
 import ICounter from "./models/Counter";
+import Pagination from "./components/common/Pagination";
 
 interface AppProps {}
 
@@ -38,6 +39,15 @@ class App extends Component<AppProps, AppState> {
     this.setState({ counters });
   };
 
+  handleDecrement = (counter: ICounter) => {
+    const counters = [...this.state.counters];
+    const index = counters.indexOf(counter);
+
+    counters[index] = { ...counter };
+    counters[index].value--;
+    this.setState({ counters });
+  };
+
   // Si no es flecha pierde referencia del this
   handleDelete = (idToDelete: number) => {
     const counters = this.state.counters.filter(({ id }) => id !== idToDelete);
@@ -45,17 +55,22 @@ class App extends Component<AppProps, AppState> {
   };
 
   render() {
+    console.log("App - Rendered");
+
     return (
       <>
-        <NavBar />
+        <NavBar
+          totalCounters={this.state.counters.filter((c) => c.value > 0).length}
+        />
         <main className="container">
           <ListOfMovies />
-          <Counters
+          {/* <Counters
             counters={this.state.counters}
             onReset={this.handleReset}
             onIncrement={this.handleIncrement}
+            onDecrement={this.handleDecrement}
             onDelete={this.handleDelete}
-          />
+          /> */}
         </main>
       </>
     );
