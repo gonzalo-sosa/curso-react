@@ -1,8 +1,15 @@
 import { Component } from "react";
 import "./App.css";
 import ListOfMovies from "./components/ListOfMovies";
-import NavBar from "./components/NavBar";
+import NavBar from "./components/routes/navbar";
 import ICounter from "./models/Counter";
+import { Route, Routes } from "react-router-dom";
+import Home from "./components/routes/home";
+import Products from "./components/routes/products";
+import Posts from "./components/routes/posts";
+import Dashboard from "./components/routes/admin/dashboard";
+import NotFound from "./components/routes/notFound";
+import ProductDetails from "./components/routes/productDetails";
 
 interface AppState {
   counters: ICounter[];
@@ -55,11 +62,21 @@ class App extends Component<object, AppState> {
 
     return (
       <>
-        <NavBar
+        {/* <NavBar
           totalCounters={this.state.counters.filter((c) => c.value > 0).length}
-        />
+        /> */}
+        <NavBar />
         <main className="container">
-          <ListOfMovies />
+          <Routes>
+            <Route index element={<Home />} />
+            <Route path="/products" element={<Products />} />
+            <Route path="/products/:id" element={<ProductDetails />} />
+            <Route path="/posts/:year?/:month?" element={<Posts />} />
+            <Route path="/admin" element={<Dashboard match={undefined} />} />
+            <Route path="/movies" element={<ListOfMovies />} />
+            <Route errorElement={<NotFound />} />
+          </Routes>
+
           {/* <Counters
             counters={this.state.counters}
             onReset={this.handleReset}
