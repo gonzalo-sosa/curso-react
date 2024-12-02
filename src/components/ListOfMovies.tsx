@@ -9,13 +9,7 @@ import FilterBy from "./common/FilterBy";
 import MoviesTable from "./MoviesTables";
 import Pagination from "./common/Pagination";
 import _ from "lodash";
-
-type Order = "asc" | "desc";
-
-export type SortColumn = {
-  path: string;
-  order: Order;
-};
+import { SortColumn } from "./common/TableHeader";
 
 interface ListOfMoviesState {
   genres: IGenre[];
@@ -98,7 +92,7 @@ class ListOfMovies extends Component<object, ListOfMoviesState> {
     } = this.state;
     const { length: count } = allMovies;
 
-    if (count === 0) return <p>There are no movies in he database.</p>;
+    if (count === 0) return <p>There are no movies in the database.</p>;
 
     const filtered =
       selectedGenre && selectedGenre._id
