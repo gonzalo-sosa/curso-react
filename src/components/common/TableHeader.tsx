@@ -1,4 +1,4 @@
-import { Component, ReactNode } from "react";
+import { Component } from "react";
 import TableRow from "./TableRow";
 
 export type Order = "asc" | "desc";

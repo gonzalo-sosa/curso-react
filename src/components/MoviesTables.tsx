@@ -1,10 +1,10 @@
 import IMovie from "../models/Movie";
 import Table from "./common/Table";
-import TableRow from "./common/TableRow";
 import TableData from "./common/TableData";
-import Like from "./common/Like";
 import { Component } from "react";
 import TableHeader, { SortColumn } from "./common/TableHeader";
+import TableBody from "./common/TableBody";
+import Like from "./common/Like";
 
 interface MoviesTableProps {
   movies: IMovie[];
@@ -20,8 +20,26 @@ class MoviesTable extends Component<MoviesTableProps, object> {
     { path: "genre.name", label: "Genre" },
     { path: "numberInStock", label: "Stock" },
     { path: "dailyRentalRate", label: "Rate" },
-    { key: "like" },
-    { key: "delete" },
+    {
+      key: "like",
+      content: (movie: IMovie) => (
+        <Like
+          liked={movie.liked ?? false}
+          onClick={() => this.props.onLike(movie)}
+        />
+      ),
+    },
+    {
+      key: "delete",
+      content: (movie: IMovie) => (
+        <button
+          onClick={() => this.props.onDelete(movie._id)}
+          className="btn btn-danger"
+        >
+          Delete
+        </button>
+      ),
+    },
   ];
 
   renderMovieData = ({
@@ -41,7 +59,7 @@ class MoviesTable extends Component<MoviesTableProps, object> {
   };
 
   render() {
-    const { movies, onLike, onDelete, onSort, sortColumn } = this.props;
+    const { movies, onSort, sortColumn } = this.props;
 
     return (
       <Table>
@@ -50,27 +68,7 @@ class MoviesTable extends Component<MoviesTableProps, object> {
           sortColumn={sortColumn}
           onSort={onSort}
         />
-        <tbody>
-          {movies.map((movie) => (
-            <TableRow key={movie._id}>
-              {this.renderMovieData(movie)}
-              <TableData>
-                <Like
-                  liked={movie.liked ?? false}
-                  onClick={() => onLike(movie)}
-                />
-              </TableData>
-              <TableData>
-                <button
-                  onClick={() => onDelete(movie._id)}
-                  className="btn btn-danger"
-                >
-                  Delete
-                </button>
-              </TableData>
-            </TableRow>
-          ))}
-        </tbody>
+        <TableBody data={movies} columns={this.columns} />
       </Table>
     );
   }
