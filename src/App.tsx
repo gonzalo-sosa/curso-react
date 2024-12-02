@@ -1,18 +1,14 @@
 import { Component } from "react";
 import "./App.css";
-import Counters from "./components/Counters";
 import ListOfMovies from "./components/ListOfMovies";
 import NavBar from "./components/NavBar";
 import ICounter from "./models/Counter";
-import Pagination from "./components/common/Pagination";
-
-interface AppProps {}
 
 interface AppState {
   counters: ICounter[];
 }
 
-class App extends Component<AppProps, AppState> {
+class App extends Component<object, AppState> {
   state = {
     counters: [
       { id: 1, value: 4 },
