@@ -14,3 +14,7 @@ body {
   display: grid;
   min-height: 100vh;
 }
+
+.clickable {
+  cursor: pointer;
+}
