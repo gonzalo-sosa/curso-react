@@ -4,9 +4,7 @@ interface TableProps {
   children: ReactNode;
 }
 
-interface TableState {}
-
-class Table extends Component<TableProps, TableState> {
+class Table extends Component<TableProps, object> {
   //state = { :  }
   render() {
     return <table className="table table-striped">{this.props.children}</table>;

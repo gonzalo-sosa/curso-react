@@ -1,19 +1,21 @@
 import { Component } from "react";
-import Table from "./common/Table.js";
-import TableRow from "./common/TableRow.js";
-import TableHeader from "./common/TableHeader.js";
-import TableData from "./common/TableData.js";
-import Like from "./common/Like.js";
-import Pagination from "./common/Pagination.js";
-import paginate from "../utils/paginate.js";
-import FilterBy from "./common/FilterBy.js";
+import IMovie from "../models/Movie";
+import IGenre from "../models/Genre";
 import { getMovies } from "../services/fakeMovieService.js";
 import { getGenres } from "../services/fakeGenreService.js";
-import IMovie from "../models/Movie";
-import IGenre from "../models/Genre.js";
 import { Filter, FilterPerGenre } from "../utils/filter.js";
+import paginate from "../utils/paginate.js";
+import FilterBy from "./common/FilterBy";
+import MoviesTable from "./MoviesTables";
+import Pagination from "./common/Pagination";
+import _ from "lodash";
 
-interface ListOfMoviesProps {}
+type Order = "asc" | "desc";
+
+export type SortColumn = {
+  path: string;
+  order: Order;
+};
 
 interface ListOfMoviesState {
   genres: IGenre[];
@@ -21,23 +23,33 @@ interface ListOfMoviesState {
   pageSize: number;
   currentPage: number;
   selectedGenre: null | IGenre;
+  sortColumn: SortColumn;
 }
 
 const DEFAULT_PAGE_SIZE = 4;
 const DEFAULT_CURRENT_PAGE = 1;
 
-class ListOfMovies extends Component<ListOfMoviesProps, ListOfMoviesState> {
+class ListOfMovies extends Component<object, ListOfMoviesState> {
   state = {
     genres: [] as IGenre[],
     movies: [] as IMovie[],
     pageSize: DEFAULT_PAGE_SIZE,
     currentPage: DEFAULT_CURRENT_PAGE,
-    selectedGenre: null,
+    selectedGenre: null as IGenre | null,
+    sortColumn: {
+      path: "title",
+      order: "asc",
+    } as SortColumn,
   };
 
   componentDidMount(): void {
+    const genres = [
+      { _id: "", name: "All Genres" },
+      ...getGenres(),
+    ] as IGenre[];
+
     this.setState({
-      genres: getGenres() as IGenre[],
+      genres,
       movies: getMovies() as IMovie[],
     });
   }
@@ -61,7 +73,11 @@ class ListOfMovies extends Component<ListOfMoviesProps, ListOfMoviesState> {
   };
 
   handleGenreSelect = (genre: IGenre) => {
-    this.setState({ selectedGenre: genre });
+    this.setState({ selectedGenre: genre, currentPage: 1 });
+  };
+
+  handleSort = (sortColumn: SortColumn) => {
+    this.setState({ sortColumn });
   };
 
   filterGenre = (genre: IGenre) => {
@@ -70,6 +86,7 @@ class ListOfMovies extends Component<ListOfMoviesProps, ListOfMoviesState> {
 
     return filter.filter(this.state.movies, filterByGenre.exact, filterByGenre);
   };
+
   render() {
     const {
       genres: allGenres,
@@ -77,18 +94,24 @@ class ListOfMovies extends Component<ListOfMoviesProps, ListOfMoviesState> {
       pageSize,
       currentPage,
       selectedGenre,
+      sortColumn,
     } = this.state;
     const { length: count } = allMovies;
 
     if (count === 0) return <p>There are no movies in he database.</p>;
 
-    const filtered = selectedGenre
-      ? this.filterGenre(selectedGenre as IGenre)
-      : allMovies;
+    const filtered =
+      selectedGenre && selectedGenre._id
+        ? this.filterGenre(selectedGenre as IGenre)
+        : allMovies;
 
-    console.log(filtered);
+    const sorted = _.orderBy(
+      filtered,
+      [sortColumn.path],
+      [sortColumn.order]
+    ) as IMovie[];
 
-    const movies = paginate(filtered, currentPage, pageSize);
+    const movies = paginate(sorted, currentPage, pageSize);
 
     return (
       <div className="row">
@@ -102,27 +125,14 @@ class ListOfMovies extends Component<ListOfMoviesProps, ListOfMoviesState> {
           />
         </div>
         <div className="col">
-          <p>Showing {count} in the database.</p>
-          <Table>
-            <thead>
-              <TableRow>{this.renderHeaders()}</TableRow>
-            </thead>
-            <tbody>
-              {movies.map((movie) => (
-                <TableRow key={movie._id}>
-                  {this.renderMovieData(movie)}
-                  <TableData>
-                    <button
-                      onClick={() => this.handleDeleteMovie(movie._id)}
-                      className="btn btn-danger"
-                    >
-                      Delete
-                    </button>
-                  </TableData>
-                </TableRow>
-              ))}
-            </tbody>
-          </Table>
+          <p>Showing {filtered.length} in the database.</p>
+          <MoviesTable
+            movies={movies}
+            sortColumn={sortColumn}
+            onLike={this.handleLikeMovie}
+            onDelete={this.handleDeleteMovie}
+            onSort={this.handleSort}
+          />
           <Pagination
             itemsCount={filtered.length}
             pageSize={pageSize}
@@ -131,31 +141,6 @@ class ListOfMovies extends Component<ListOfMoviesProps, ListOfMoviesState> {
           />
         </div>
       </div>
-    );
-  }
-
-  renderHeaders() {
-    const headers = ["Title", "Genre", "Stock", "Rate", "Like", "Action"];
-
-    return headers.map((header, index) => (
-      <TableHeader key={index}>{header}</TableHeader>
-    ));
-  }
-
-  renderMovieData(movie: IMovie) {
-    return (
-      <>
-        <TableData>{movie.title}</TableData>
-        <TableData>{movie.genre.name}</TableData>
-        <TableData>{movie.numberInStock}</TableData>
-        <TableData>{movie.dailyRentalRate}</TableData>
-        <TableData>
-          <Like
-            liked={movie.liked ?? false}
-            onClick={() => this.handleLikeMovie(movie)}
-          />
-        </TableData>
-      </>
     );
   }
 }

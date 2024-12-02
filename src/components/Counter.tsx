@@ -8,9 +8,7 @@ interface CounterProps {
   onDelete: (id: number) => void;
 }
 
-interface CounterState {}
-
-class Counter extends Component<CounterProps, CounterState> {
+class Counter extends Component<CounterProps, object> {
   render() {
     return (
       <div className="row">

@@ -2,15 +2,19 @@ import { Component, ReactNode } from "react";
 
 interface TableHeaderProps {
   children: ReactNode;
+  name?: string;
+  onClick?: (arg: string) => void;
 }
 
-interface TableHeaderState {}
-
-class TableHeader extends Component<TableHeaderProps, TableHeaderState> {
+class TableHeader extends Component<TableHeaderProps, object> {
   //state = { : }
 
   render() {
-    return <th>{this.props.children}</th>;
+    return (
+      <th onClick={() => this.props?.onClick?.(this.props.name ?? "")}>
+        {this.props.children}
+      </th>
+    );
   }
 }
 

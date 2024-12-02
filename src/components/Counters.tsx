@@ -10,9 +10,7 @@ interface CountersProps {
   onDelete: (idToDelete: number) => void;
 }
 
-interface CountersState {}
-
-class Counters extends Component<CountersProps, CountersState> {
+class Counters extends Component<CountersProps, object> {
   render() {
     const { counters, onReset, onIncrement, onDecrement, onDelete } =
       this.props;

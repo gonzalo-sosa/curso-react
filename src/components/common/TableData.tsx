@@ -4,9 +4,7 @@ interface TableDataProps {
   children: ReactNode;
 }
 
-interface TableDataState {}
-
-class TableData extends Component<TableDataProps, TableDataState> {
+class TableData extends Component<TableDataProps, object> {
   //state = { :  }
   render() {
     return <td>{this.props.children}</td>;

@@ -4,9 +4,7 @@ interface TableRowProps {
   children: ReactNode;
 }
 
-interface TableRowState {}
-
-class TableRow extends Component<TableRowProps, TableRowState> {
+class TableRow extends Component<TableRowProps, object> {
   //state = { :  }
   render() {
     return <tr>{this.props.children}</tr>;
