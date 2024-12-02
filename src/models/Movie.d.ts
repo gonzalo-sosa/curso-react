@@ -9,4 +9,3 @@ export default interface IMovie{
   publishDate: string
   liked?: boolean
 }
-
