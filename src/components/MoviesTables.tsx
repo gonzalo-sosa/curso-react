@@ -1,9 +1,9 @@
 import IMovie from "../models/Movie";
-import Table from "./common/Table";
-import TableData from "./common/TableData";
+import { Table } from "./common/Table/index";
 import { Component } from "react";
 import Like from "./common/Like";
-import { SortColumn } from "./common/types";
+import { SortColumn } from "./common/Table/types";
+import { Link } from "react-router-dom";
 
 interface MoviesTableProps {
   movies: IMovie[];
@@ -15,7 +15,12 @@ interface MoviesTableProps {
 
 class MoviesTable extends Component<MoviesTableProps, object> {
   columns = [
-    { path: "title", label: "Title" },
+    {
+      path: "title",
+      content: (movie: IMovie) => (
+        <Link to={`/movies/${movie._id}`}>{movie.title}</Link>
+      ),
+    },
     { path: "genre.name", label: "Genre" },
     { path: "numberInStock", label: "Stock" },
     { path: "dailyRentalRate", label: "Rate" },
@@ -40,22 +45,6 @@ class MoviesTable extends Component<MoviesTableProps, object> {
       ),
     },
   ];
-
-  renderMovieData = ({
-    title,
-    genre: { name },
-    numberInStock,
-    dailyRentalRate,
-  }: IMovie) => {
-    return (
-      <>
-        <TableData>{title}</TableData>
-        <TableData>{name}</TableData>
-        <TableData>{numberInStock}</TableData>
-        <TableData>{dailyRentalRate}</TableData>
-      </>
-    );
-  };
 
   render() {
     const { movies, onSort, sortColumn } = this.props;

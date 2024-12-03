@@ -9,7 +9,7 @@ import FilterBy from "./common/FilterBy";
 import MoviesTable from "./MoviesTables";
 import Pagination from "./common/Pagination";
 import _ from "lodash";
-import { SortColumn } from "./common/types.js";
+import { SortColumn } from "./common/Table/types.js";
 
 interface ListOfMoviesState {
   genres: IGenre[];
