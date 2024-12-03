@@ -1,11 +1,16 @@
 import React, { Component } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 
 function ProductDetails (){
   const { id: productId } = useParams();
-  
+  const navigate = useNavigate();
+
+  // Programmatic navigation
   const handleSave = () => {
-    // Navigate to /products
+    // // Navigate to /products
+    // this.props.history.push("/products")
+    // navigate("/products"); // Si sólo se quiere realizar push al historial
+    navigate("/products", { replace: true }); // Para reemplazar el historial
   };
 
   
