@@ -1,15 +1,22 @@
 import { Component } from "react";
 import "./App.css";
 import ListOfMovies from "./components/ListOfMovies";
-import NavBar from "./components/routes/navbar";
+// import NavBar from "./components/routes/navbar";
+import NavBar from "./components/NavBar";
 import ICounter from "./models/Counter";
-import { Route, Routes } from "react-router-dom";
+import { Navigate, Route, Routes } from "react-router-dom";
 import Home from "./components/routes/home";
 import Products from "./components/routes/products";
 import Posts from "./components/routes/posts";
 import Dashboard from "./components/routes/admin/dashboard";
 import NotFound from "./components/routes/notFound";
 import ProductDetails from "./components/routes/productDetails";
+import AdminUsers from "./components/routes/admin/users";
+import AdminPosts from "./components/routes/admin/posts";
+import Rentals from "./components/routes/rentals";
+import Customers from "./components/routes/customers";
+import Movie from "./components/routes/movie";
+import LoginForm from "./components/loginForm";
 
 interface AppState {
   counters: ICounter[];
@@ -69,12 +76,28 @@ class App extends Component<object, AppState> {
         <main className="container">
           <Routes>
             <Route index element={<Home />} />
+            <Route path="/login" element={<LoginForm />} />
+            <Route path="/movies" element={<ListOfMovies />} />
+            <Route path="/movies/:id" element={<Movie />} />
+            <Route path="/customers" element={<Customers />} />
+            <Route path="/rentals" element={<Rentals />} />
+
+            {/* Rutas anidadas */}
+            <Route path="/admin" element={<Dashboard />}>
+              <Route path="users" element={<AdminUsers />} />
+              <Route path="posts" element={<AdminPosts />} />
+            </Route>
+
             <Route path="/products" element={<Products />} />
             <Route path="/products/:id" element={<ProductDetails />} />
             <Route path="/posts/:year?/:month?" element={<Posts />} />
-            <Route path="/admin" element={<Dashboard match={undefined} />} />
-            <Route path="/movies" element={<ListOfMovies />} />
-            <Route errorElement={<NotFound />} />
+
+            {/* Redirección */}
+            <Route path="/messages" element={<Navigate to={"/posts"} />} />
+
+            {/* Rutas para Error */}
+            <Route path="/not-found" element={<NotFound />} />
+            <Route path="/*" element={<Navigate to={"/not-found"} />} />
           </Routes>
 
           {/* <Counters
