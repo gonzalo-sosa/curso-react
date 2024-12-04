@@ -1,4 +1,4 @@
 export default interface IGenre{
-  _id: string
+  readonly _id: string
   name: string
 }

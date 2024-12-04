@@ -1,11 +1,11 @@
 import IGenre from "./Genre"
 
 export default interface IMovie{
-  _id: string
+  readonly _id: string
   title: string
   genre: IGenre
   numberInStock: number
   dailyRentalRate: number
-  publishDate: string
+  publishDate?: string
   liked?: boolean
 }

@@ -15,8 +15,9 @@ import AdminUsers from "./components/routes/admin/users";
 import AdminPosts from "./components/routes/admin/posts";
 import Rentals from "./components/routes/rentals";
 import Customers from "./components/routes/customers";
-import Movie from "./components/routes/movie";
 import LoginForm from "./components/loginForm";
+import RegisterForm from "./components/registerForm";
+import MovieForm from "./components/movieForm";
 
 interface AppState {
   counters: ICounter[];
@@ -77,8 +78,14 @@ class App extends Component<object, AppState> {
           <Routes>
             <Route index element={<Home />} />
             <Route path="/login" element={<LoginForm />} />
-            <Route path="/movies" element={<ListOfMovies />} />
-            <Route path="/movies/:id" element={<Movie />} />
+            <Route path="/register" element={<RegisterForm />} />
+
+            <Route path="/movies">
+              <Route index element={<ListOfMovies />} />
+              <Route path=":id" element={<MovieForm />} />
+              <Route path="new" element={<MovieForm />} />
+            </Route>
+
             <Route path="/customers" element={<Customers />} />
             <Route path="/rentals" element={<Rentals />} />
 
