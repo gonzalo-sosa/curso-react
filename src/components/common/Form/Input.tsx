@@ -1,41 +1,21 @@
-import { HTMLInputTypeAttribute } from "react";
-
-interface InputProps {
-  type: HTMLInputTypeAttribute;
-  id: string;
+interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   name: string;
-  value: string;
-  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   label: string;
   error?: string;
-  placeholder?: string;
-  autofocus?: boolean;
 }
 
 const Input: React.FC<InputProps> = ({
-  type,
-  id,
   name,
-  value,
-  onChange,
   label,
   error,
-  placeholder = "",
-  autofocus = false,
+  children,
+  ...rest
 }) => {
   return (
     <div className="form-group">
       <label htmlFor={name}>{label}</label>
-      <input
-        autoFocus={autofocus}
-        value={value}
-        onChange={onChange}
-        type={type}
-        id={id}
-        name={name}
-        className="form-control"
-        placeholder={placeholder}
-      />
+      <input {...rest} id={name} name={name} className="form-control" />
+      {children}
       {error && <div className="alert alert-danger">{error}</div>}
     </div>
   );
