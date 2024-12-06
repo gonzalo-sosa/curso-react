@@ -14,7 +14,13 @@ import { Link } from "react-router-dom";
 import Search from "./common/Search.js";
 import { toast } from "react-toastify";
 
-interface ListOfMoviesState {
+type ListOfMoviesProps = {
+  user: {
+    [k: string]: string;
+  };
+};
+
+type ListOfMoviesState = {
   genres: IGenre[];
   movies: IMovie[];
   pageSize: number;
@@ -22,12 +28,12 @@ interface ListOfMoviesState {
   selectedGenre: null | IGenre;
   sortColumn: SortColumn;
   searchQuery: string;
-}
+};
 
 const DEFAULT_PAGE_SIZE = 4;
 const DEFAULT_CURRENT_PAGE = 1;
 
-class ListOfMovies extends Component<object, ListOfMoviesState> {
+class ListOfMovies extends Component<ListOfMoviesProps, ListOfMoviesState> {
   state = {
     genres: [] as IGenre[],
     movies: [] as IMovie[],
@@ -143,8 +149,7 @@ class ListOfMovies extends Component<object, ListOfMoviesState> {
       pageSize,
       searchQuery,
     } = this.state;
-
-    if (count === 0) return <p>There are no movies in the database.</p>;
+    const { user } = this.props;
 
     const { totalCount, data: movies } = this.getPageData();
 
@@ -160,9 +165,11 @@ class ListOfMovies extends Component<object, ListOfMoviesState> {
           />
         </div>
         <div className="col">
-          <Link className="btn btn-primary" to="/movies/new">
-            New Movie
-          </Link>
+          {user && (
+            <Link className="btn btn-primary" to="/movies/new">
+              New Movie
+            </Link>
+          )}
           <p>Showing {totalCount} in the database.</p>
           <Search value={searchQuery} onChange={this.handleMovieSearch} />
           <MoviesTable

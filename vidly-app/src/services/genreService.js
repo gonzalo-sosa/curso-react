@@ -1,6 +1,5 @@
 import http from "./httpService";
-import { apiUrl } from "../config.json";
 
 export function getGenres() {
-  return http.get(`${apiUrl}/genres`);
+  return http.get(`${import.meta.env.REACT_APP_API_URL}/genres`);
 }

@@ -1,55 +1,61 @@
-import { Component } from "react";
-import "./App.css";
-import ListOfMovies from "./components/ListOfMovies";
 // import NavBar from "./components/routes/navbar";
-import NavBar from "./components/NavBar";
-import ICounter from "./models/Counter";
-import { Navigate, Route, Routes } from "react-router-dom";
-import Home from "./components/routes/home";
-import Products from "./components/routes/products";
-import Posts from "./components/routes/posts";
-import Dashboard from "./components/routes/admin/dashboard";
-import NotFound from "./components/routes/notFound";
-import ProductDetails from "./components/routes/productDetails";
-import AdminUsers from "./components/routes/admin/users";
-import AdminPosts from "./components/routes/admin/posts";
-import Rentals from "./components/routes/rentals";
-import Customers from "./components/routes/customers";
-import LoginForm from "./components/loginForm";
-import RegisterForm from "./components/registerForm";
-import MovieForm from "./components/movieForm";
-import { ToastContainer } from "react-toastify";
+import "./App.css";
 import "react-toastify/dist/ReactToastify.css";
-import jwtDecode from "jwt-decode";
+import { Component } from "react";
+import { Navigate, Route, Routes } from "react-router-dom";
+import { ToastContainer } from "react-toastify";
+import AdminPosts from "./components/routes/admin/posts";
+import AdminUsers from "./components/routes/admin/users";
+import auth from "./services/authService";
+import Customers from "./components/routes/customers";
+import Dashboard from "./components/routes/admin/dashboard";
+import Home from "./components/routes/home";
+import ListOfMovies from "./components/ListOfMovies";
+import LoginForm from "./components/loginForm";
+import Logout from "./components/logout";
+import MovieForm from "./components/movieForm";
+import NavBar from "./components/NavBar";
+import NotFound from "./components/routes/notFound";
+import Posts from "./components/routes/posts";
+import ProductDetails from "./components/routes/productDetails";
+import Products from "./components/routes/products";
+import ProtectedRoute from "./components/routes/ProtectedRoute";
+import RegisterForm from "./components/registerForm";
+import Rentals from "./components/routes/rentals";
 
-class App extends Component<object, object> {
+type AppState = {
+  user: {
+    [k: string]: string;
+  };
+};
+
+class App extends Component<object, AppState> {
   componentDidMount(): void {
     try {
-      const jwt = localStorage.getItem("token");
-      const user = jwtDecode(jwt);
+      const user = auth.getCurrentUser();
       this.setState({ user });
     } catch (error) {}
   }
-
   render() {
     console.log("App - Rendered");
+    const { user } = this.state;
 
     return (
       <>
-        {/* <NavBar
-          totalCounters={this.state.counters.filter((c) => c.value > 0).length}
-        /> */}
         <ToastContainer />
-        <NavBar user={this.state.user} />
+        <NavBar user={user} />
         <main className="container">
           <Routes>
             <Route index element={<Home />} />
             <Route path="/login" element={<LoginForm />} />
             <Route path="/register" element={<RegisterForm />} />
+            <Route path="/logout" element={<Logout />} />
 
             <Route path="/movies">
-              <Route index element={<ListOfMovies />} />
-              <Route path=":id" element={<MovieForm />} />
+              <Route index element={<ListOfMovies user={user} />} />
+              <ProtectedRoute path=":id" redirectTo="/login">
+                <MovieForm />
+              </ProtectedRoute>
               <Route path="new" element={<MovieForm />} />
             </Route>
 
@@ -73,14 +79,6 @@ class App extends Component<object, object> {
             <Route path="/not-found" element={<NotFound />} />
             <Route path="/*" element={<Navigate to={"/not-found"} />} />
           </Routes>
-
-          {/* <Counters
-            counters={this.state.counters}
-            onReset={this.handleReset}
-            onIncrement={this.handleIncrement}
-            onDecrement={this.handleDecrement}
-            onDelete={this.handleDelete}
-          /> */}
         </main>
       </>
     );
@@ -130,4 +128,17 @@ state = {
     const counters = this.state.counters.filter(({ id }) => id !== idToDelete);
     this.setState({ counters });
   };
+
+  
+  {<NavBar
+    totalCounters={this.state.counters.filter((c) => c.value > 0).length}
+  />} 
+
+  {<Counters
+    counters={this.state.counters}
+    onReset={this.handleReset}
+    onIncrement={this.handleIncrement}
+    onDecrement={this.handleDecrement}
+    onDelete={this.handleDelete}
+  />}
 */

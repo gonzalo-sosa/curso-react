@@ -1,7 +1,6 @@
 import { Form } from "./common/Form";
 import Joi from "joi-browser";
 import { getMovie, saveMovie } from "../services/movieService";
-import IMovie from "../models/Movie";
 import { getGenres } from "../services/genreService";
 import {
   NavigateOptions,

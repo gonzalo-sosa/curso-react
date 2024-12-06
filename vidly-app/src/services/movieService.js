@@ -1,7 +1,6 @@
 import http from "./httpService";
-import { apiUrl } from "../config.json";
 
-const apiEndpoint = `${apiUrl}/movies`;
+const apiEndpoint = `${import.meta.env.REACT_APP_API_URL}/movies`;
 
 function getMovieUrl(id) {
   return `${apiEndpoint}/${id}`;

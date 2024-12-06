@@ -1,17 +1,12 @@
 import { Form } from "./common/Form";
 import Joi from "joi-browser";
 import * as userService from "../services/userService";
-import { NavigateOptions, useNavigate } from "react-router-dom";
-
+import auth from "../services/authService";
 const RegisterForm = () => {
-  const navigate = useNavigate();
-
-  return <RegisterFormClass navigate={navigate} />;
+  return <RegisterFormClass />;
 };
 
-type RegisterFormProps = {
-  navigate: (path: string, options?: NavigateOptions) => void;
-};
+type RegisterFormProps = {};
 
 type RegisterFormState = {
   data: {};
@@ -37,9 +32,8 @@ class RegisterFormClass extends Form<RegisterFormProps, RegisterFormState> {
   doSubmit = async () => {
     try {
       const response = await userService.register(this.state.data);
-      /* Utilizar el json web token si es existe */
-      localStorage.setItem("token", response.headers["x-auth-token"]);
-      this.props.navigate("/"); // window.location = "/"
+      auth.loginWithJwt(response.headers["x-auth-token"]);
+      window.location = "/" as string & Location; // full reload
     } catch (error: any) {
       if (error.response && error.response.status === 400) {
         const errors = { ...this.state.errors } as { [k: string]: string };

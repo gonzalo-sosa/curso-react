@@ -1,16 +1,20 @@
 import { Form } from "./common/Form";
 import Joi from "joi-browser";
-import { login } from "../services/authService";
-import { NavigateOptions, useNavigate } from "react-router-dom";
+import auth from "../services/authService";
+import {
+  useLocation,
+  Location as LocationRouter,
+  Navigate,
+} from "react-router-dom";
 
 const LoginForm = () => {
-  const navigate = useNavigate();
+  const location = useLocation();
 
-  return <LoginFormClass navigate={navigate} />;
+  return <LoginFormClass location={location} />;
 };
 
 type LoginFormProps = {
-  navigate: (path: string, options?: NavigateOptions) => void;
+  location: LocationRouter;
 };
 
 type LoginFormState = {
@@ -35,9 +39,13 @@ class LoginFormClass extends Form<LoginFormProps, LoginFormState> {
   doSubmit = async () => {
     try {
       const { data } = this.state;
-      const { data: jwt } = await login(data.username, data.password);
-      localStorage.setItem("token", jwt);
-      this.props.navigate("/"); // window.location = "/"
+      await auth.login(data.username, data.password);
+
+      const { state } = this.props.location;
+
+      window.location = state
+        ? state.from.pathname
+        : ("/" as string & Location); // full reload
     } catch (error: any) {
       if (error.response && error.response.status === 400) {
         const errors = { ...this.state.errors } as { [k: string]: string };
@@ -48,6 +56,8 @@ class LoginFormClass extends Form<LoginFormProps, LoginFormState> {
   };
 
   render() {
+    if (auth.getCurrentUser()) return <Navigate to="/" />;
+
     return (
       <div>
         <h1>Login</h1>
